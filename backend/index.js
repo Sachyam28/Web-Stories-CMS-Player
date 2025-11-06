@@ -13,7 +13,8 @@ app.use(
   cors({
     origin: [
       'https://web-stories-cms-f8qf.vercel.app', // your frontend
-      'http://localhost:5173',                   // optional for local dev
+      'http://localhost:5173',         
+      'https://web-stories-cms-player.vercel.app'          // optional for local dev
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     credentials: true,
