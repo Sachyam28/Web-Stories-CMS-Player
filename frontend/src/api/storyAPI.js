@@ -5,7 +5,7 @@ export async function fetchStories(category = null) {
     ? `${API_BASE}/stories?category=${category}`
     : `${API_BASE}/stories`;
   const res = await fetch(url);
-  return res.json();
+  return res.json(); 
 }
 
 export async function fetchStory(id) {
