@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.BASE_URL ;
+const API_BASE = "https://web-stories-cms.vercel.app" ;
 
 export async function fetchStories(category = null) {
   const url = category
