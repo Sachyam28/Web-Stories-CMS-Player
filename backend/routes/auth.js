@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const router = express.Router();
+import mongoose from "mongoose";
 
 // REGISTER (only run once to create admin)
 router.post("/register", async (req, res) => {
@@ -34,6 +35,11 @@ router.post("/register", async (req, res) => {
 // LOGIN
 router.post("/login", async (req, res) => {
   try {
+    // ✅ Check MongoDB connection state
+    if (mongoose.connection.readyState !== 1) {
+      return res.status(503).json({ message: "Database not connected" });
+    }
+  
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });

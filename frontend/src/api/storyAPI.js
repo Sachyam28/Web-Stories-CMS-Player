@@ -1,4 +1,4 @@
-const API_BASE = "https://web-stories-cms-player-mpph.vercel.app";
+const API_BASE = "https://web-stories-cms-player-mpph.vercel.app/api";
 
 export async function fetchStories(category = null) {
   const url = category
