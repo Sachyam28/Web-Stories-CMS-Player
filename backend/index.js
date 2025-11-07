@@ -32,32 +32,10 @@ app.get("/", (req, res) => {
   res.send("Webstories backend is working ✅");
 });
 
-let isConnected = false;
-
-// ✅ Connect to MongoDB
-async function connectToDB() {
-  try {
-    await mongoose.connect(process.env.MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 30000,
-    });
-    isConnected = true;
-    console.log("✅ MongoDB connected");
-  } catch (err) {
-    console.error("❌ Mongo Error:", err);
-  }
-}
-
-//middleware to check DB connection
-app.use(async (req, res, next) => {
-  if (!isConnected) {
-    connectToDB();
-  }
-  next();
-});
-
-
+// ✅ Connect MongoDB once
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log("✅ MongoDB connected"))
+  .catch(err => console.error("❌ Mongo Error:", err));
 
 // ✅ DO NOT app.listen() on Vercel
 // app.listen(PORT) ❌ REMOVE
