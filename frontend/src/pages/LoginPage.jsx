@@ -11,10 +11,13 @@ export default function LoginPage() {
     e.preventDefault();
 
     try {
-      const res = await axios.post("https://web-stories-cms-player-mpph.vercel.app/api/auth/login", {
-        email,
-        password,
-      });
+      const res = await axios.post(
+        "https://web-stories-cms-player-mpph.vercel.app/api/auth/login",
+        {
+          email,
+          password,
+        }
+      );
 
       localStorage.setItem("token", res.data.token);
 
@@ -49,6 +52,12 @@ export default function LoginPage() {
         <button className="w-full bg-blue-600 py-3 rounded hover:bg-blue-700">
           Login
         </button>
+        <Link
+          to="/reset-admin"
+          className="mt-3 block text-center text-blue-400 hover:underline text-sm"
+        >
+          Forgot email or password?
+        </Link>
       </form>
     </div>
   );

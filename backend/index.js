@@ -33,9 +33,22 @@ app.get("/", (req, res) => {
 });
 
 // ✅ Connect MongoDB once
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("✅ MongoDB connected"))
-  .catch(err => console.error("❌ Mongo Error:", err));
+async function connectDB() {
+  try {
+    await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 10000, // 10s timeout
+    });
+    console.log("✅ MongoDB connected");
+  } catch (error) {
+    console.error("❌ MongoDB connection failed:", error.message);
+    process.exit(1);
+  }
+}
+
+connectDB();
+
 
 // ✅ DO NOT app.listen() on Vercel
 // app.listen(PORT) ❌ REMOVE

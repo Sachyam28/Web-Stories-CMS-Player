@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const router = express.Router();
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 // REGISTER (only run once to create admin)
 router.post("/register", async (req, res) => {
@@ -59,5 +59,36 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+
+
+router.post("/reset-admin", async (req, res) => {
+  try {
+    const { secret, email, password } = req.body;
+
+    // ✅ Simple master secret to allow reset
+    if (secret !== process.env.MASTER_RESET_CODE) {
+      return res.status(403).json({ message: "Invalid secret code" });
+    }
+
+    const hashed = await bcrypt.hash(password, 10);
+
+    let admin = await User.findOne();
+    if (!admin) {
+      // If no admin exists, create one
+      admin = await User.create({ name: "Admin", email, password: hashed });
+      return res.json({ message: "Admin created successfully" });
+    }
+
+    // ✅ Reset existing admin
+    admin.email = email;
+    admin.password = hashed;
+    await admin.save();
+
+    res.json({ message: "Admin credentials reset successfully!" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 
 module.exports = router;
