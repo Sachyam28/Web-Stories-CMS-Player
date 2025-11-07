@@ -10,7 +10,7 @@ export default function ResetAdminPage() {
     e.preventDefault();
 
     try {
-      await axios.post("http://localhost:5000/api/auth/reset-admin", {
+      await axios.post("https://web-stories-cms-player-mpph.vercel.app/api/auth/reset-admin", {
         secret,
         email,
         password,
