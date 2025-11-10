@@ -74,7 +74,7 @@
     max-height: 100vh;
     max-width: 100%;
   }
-
+}
 /* Animations */
 .fade { animation-name: fade; }
 @keyframes fade {
