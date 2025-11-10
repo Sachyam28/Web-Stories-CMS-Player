@@ -24,7 +24,6 @@ function fileToSlide(file, meta = {}) {
 // POST /api/stories
 // multipart/form-data: title, category, slidesMeta (JSON string, optional), files[]
 router.post('/', parser.array('files'), async (req, res) => {
-  console.log("========== NEW REQUEST ==========");
   try {
     // Validate required fields
     if (!req.body.title || !req.body.category) {
@@ -52,9 +51,9 @@ router.post('/', parser.array('files'), async (req, res) => {
     }
 
     // Process files and create slides
-    console.log("Processing files:", req.files.length, "files received");
+    // console.log("Processing files:", req.files.length, "files received");
     const slides = req.files.map((file, idx) => {
-      console.log(`Processing file ${idx + 1}:`, file.originalname);
+      // console.log(`Processing file ${idx + 1}:`, file.originalname);
       return fileToSlide(file, meta[idx] || {});
     });
 
