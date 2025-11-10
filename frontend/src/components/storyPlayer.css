@@ -58,6 +58,23 @@
   background-color: #000;
 }
 
+@media (min-width: 768px) {
+  .story-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;       /* ✅ prevents zoom spill */
+    background: #000;
+  }
+
+.story-media {
+    width: auto;
+    height: 100vh;
+    object-fit: contain;    /* ✅ ensures perfect fit */
+    max-height: 100vh;
+    max-width: 100%;
+  }
+
 /* Animations */
 .fade { animation-name: fade; }
 @keyframes fade {
