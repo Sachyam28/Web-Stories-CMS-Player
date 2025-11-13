@@ -8,7 +8,7 @@ const storiesRoutes = require("./routes/stories");
 
 const app = express();
 
-// ✅ CORS for frontend
+//  CORS for frontend
 app.use(
   cors({
     origin: [
@@ -21,18 +21,22 @@ app.use(
   })
 );
 
-// ✅ Middleware
-app.use(express.json({ limit: '10mb' }));
+app.options('*', cors());
 
-// ✅ Routes
+
+//  Middleware
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
+
+//  Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/stories", storiesRoutes);
 
 app.get("/", (req, res) => {
-  res.send("Webstories backend is working ✅");
+  res.send("Webstories backend is working ");
 });
 
-// ✅ Connect MongoDB once
+//  Connect MongoDB once
 async function connectDB() {
   try {
     await mongoose.connect(process.env.MONGO_URI, {
@@ -40,9 +44,9 @@ async function connectDB() {
       useUnifiedTopology: true,
       serverSelectionTimeoutMS: 10000, // 10s timeout
     });
-    console.log("✅ MongoDB connected");
+    console.log(" MongoDB connected");
   } catch (error) {
-    console.error("❌ MongoDB connection failed:", error.message);
+    console.error(" MongoDB connection failed:", error.message);
     process.exit(1);
   }
 }
@@ -50,7 +54,7 @@ async function connectDB() {
 connectDB();
 
 
-// ✅ DO NOT app.listen() on Vercel
-// app.listen(PORT) ❌ REMOVE
+//  DO NOT app.listen() on Vercel
+// app.listen(PORT)  REMOVE
 
 module.exports = app;
