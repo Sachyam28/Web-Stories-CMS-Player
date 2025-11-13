@@ -217,6 +217,20 @@ router.post("/:id/like", async (req, res) => {
   }
 });
 
+router.post("/:id/dislike", async (req, res) => {
+  try {
+    const story = await Story.findById(req.params.id);
+    if (!story) return res.status(404).json({ message: "Story not found" });
+
+    story.dislikes += 1;
+    await story.save();
+
+    res.json({ message: "Disliked", dislikes: story.dislikes });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 
 module.exports = router;
