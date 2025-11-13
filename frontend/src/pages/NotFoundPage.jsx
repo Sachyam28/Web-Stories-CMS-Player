@@ -14,11 +14,7 @@ export default function NotFoundPage() {
         color: "#fff",
         textAlign: "center",
         padding: "20px",
-<<<<<<< HEAD
-      }} 
-=======
       }}
->>>>>>> latest
     >
       {/* Glowing 404 */}
       <h1
@@ -87,9 +83,4 @@ export default function NotFoundPage() {
       </style>
     </div>
   );
-<<<<<<< HEAD
-}  
- 
-=======
 }
->>>>>>> latest
