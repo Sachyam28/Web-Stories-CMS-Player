@@ -35,3 +35,33 @@ export async function deleteStory(id) {
   });
   return res.json();
 }
+
+export async function likeStory(id) {
+  const res = await fetch(`${API_BASE}/stories/${id}/like`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+  });
+  return res.json();
+}
+
+export async function dislikeStory(id) {
+  const res = await fetch(`${API_BASE}/stories/${id}/dislike`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+  });
+  return res.json();
+}
+
+export async function addComment(id, user, text) {
+  const res = await fetch(`${API_BASE}/stories/${id}/comment`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ user, text }),
+  });
+  return res.json();
+} 
+
+export async function fetchComments(id) {
+  const res = await fetch(`${API_BASE}/stories/${id}/comments`);
+  return res.json();
+}

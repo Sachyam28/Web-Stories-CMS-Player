@@ -9,15 +9,27 @@ export default function StoryPlayer() {
 
   const [story, setStory] = useState(null);
   const [index, setIndex] = useState(0);
+  const [likes, setLikes] = useState(0);
+  const [dislikes, setDislikes] = useState(0);
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState("");
+
   const progressRef = useRef(null);
 
+  // ✅ Fetch story data
   useEffect(() => {
     fetchStory(id).then((data) => {
+      if (!data) return;
+      // Ensure data is safe
+      data.comments = Array.isArray(data.comments) ? data.comments : [];
       setStory(data);
+      setLikes(data.likes || 0);
+      setDislikes(data.dislikes || 0);
+      setComments(data.comments);
     });
   }, [id]);
 
-  // Auto-play logic  
+  // ✅ Auto-play logic
   useEffect(() => {
     if (!story) return;
 
@@ -52,11 +64,30 @@ export default function StoryPlayer() {
     else nextSlide();
   };
 
+  // ✅ Like, Dislike, Comment handlers
+  const handleLike = () => {
+    setLikes((prev) => prev + 1);
+    // Optionally call backend API here
+  };
+
+  const handleDislike = () => {
+    setDislikes((prev) => prev + 1);
+    // Optionally call backend API here
+  };
+
+  const handleCommentSubmit = (e) => {
+    e.preventDefault();
+    if (!newComment.trim()) return;
+    const updated = [...comments, { text: newComment, date: new Date().toLocaleString() }];
+    setComments(updated);
+    setNewComment("");
+    // Optionally call backend API here
+  };
+
   if (!story) return <div>Loading...</div>;
 
   return (
     <div className="story-container" onClick={handleTap}>
-      
       {/* PROGRESS BARS */}
       <div className="story-progress">
         {story.slides.map((_, i) => (
@@ -94,9 +125,38 @@ export default function StoryPlayer() {
         <span className="close-btn" onClick={() => navigate(-1)}>✕</span>
       </div>
 
-      {/* LEFT/RIGHT TAP ZONES */}
-      <div className="tap-left" onClick={prevSlide}></div>
-      <div className="tap-right" onClick={nextSlide}></div>
+      {/* ACTION BUTTONS */}
+      <div className="story-actions">
+        <button onClick={handleLike}>👍 {likes}</button>
+        <button onClick={handleDislike}>👎 {dislikes}</button>
+      </div>
+
+      {/* COMMENTS SECTION */}
+      <div className="comments-section" onClick={(e) => e.stopPropagation()}>
+        <h4>Comments</h4>
+        {comments.length > 0 ? (
+          comments.map((c, i) => (
+            <div key={i} className="comment">
+              <p>{c.text}</p>
+              <span>{c.date}</span>
+            </div>
+          ))
+        ) : (
+          <p>No comments yet</p>
+        )}
+
+        <form onSubmit={handleCommentSubmit} className="comment-form">
+          <input
+            type="text"
+            placeholder="Add a comment..."
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+          />
+          <button type="submit">Post</button>
+        </form>
+      </div>
+
+
     </div>
   );
 }
