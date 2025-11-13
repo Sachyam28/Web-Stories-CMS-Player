@@ -21,7 +21,6 @@ app.use(
   })
 );
 
-app.options('*', cors());
 
 
 //  Middleware
