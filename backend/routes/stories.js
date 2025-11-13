@@ -203,4 +203,63 @@ router.delete('/:id', /*verifyToken,*/ async (req, res) => {
   }
 });
 
+//like
+router.post("/:id/like", async (req, res) => {
+  try {
+    const story = await Story.findById(req.params.id);
+    if (!story) return res.status(404).json({ message: "Story not found" });
+
+    story.likes += 1;
+    await story.save();
+
+    res.json({ message: "Liked", likes: story.likes });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.post("/:id/dislike", async (req, res) => {
+  try {
+    const story = await Story.findById(req.params.id);
+    if (!story) return res.status(404).json({ message: "Story not found" });
+
+    story.dislikes += 1;
+    await story.save();
+
+    res.json({ message: "Disliked", dislikes: story.dislikes });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.post("/:id/comment", async (req, res) => {
+  try {
+    const { user, text } = req.body;
+    if (!text) return res.status(400).json({ message: "Comment text required" });
+
+    const story = await Story.findById(req.params.id);
+    if (!story) return res.status(404).json({ message: "Story not found" });
+
+    const newComment = { user: user || "Anonymous", text };
+    story.comments.push(newComment);
+    await story.save();
+
+    res.json({ message: "Comment added", comments: story.comments });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.get("/:id/comments", async (req, res) => {
+  try {
+    const story = await Story.findById(req.params.id).select("comments");
+    if (!story) return res.status(404).json({ message: "Story not found" });
+    res.json(story.comments);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+
 module.exports = router;

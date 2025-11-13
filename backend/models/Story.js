@@ -16,4 +16,11 @@ const StorySchema = new mongoose.Schema({
   updatedAt: { type: Date, default: Date.now }
 });
 
+// Comment
+const CommentSchema = new mongoose.Schema({
+  user: { type: String, required: true },   // store user/admin name or "Anonymous"
+  text: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now }
+});
+
 module.exports = mongoose.model('Story', StorySchema);
