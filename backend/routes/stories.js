@@ -203,5 +203,20 @@ router.delete('/:id', /*verifyToken,*/ async (req, res) => {
   }
 });
 
+router.post("/:id/like", async (req, res) => {
+  try {
+    const story = await Story.findById(req.params.id);
+    if (!story) return res.status(404).json({ message: "Story not found" });
+
+    story.likes += 1;
+    await story.save();
+
+    res.json({ message: "Liked", likes: story.likes });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
 
 module.exports = router;
