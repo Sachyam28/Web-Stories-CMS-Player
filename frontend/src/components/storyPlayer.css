@@ -50,9 +50,9 @@
 .story-media {
   max-width: 100%;
   max-height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 10px;
-  animation-duration: .6s;
+  animation-duration: .8s;
   animation-fill-mode: both;
 }
 
@@ -106,3 +106,14 @@
 
 .tap-left { left: 0; }
 .tap-right { right: 0; }
+
+/* ✅ Desktop FIX */
+@media (min-width: 768px) {
+  .story-media {
+    max-height: 95vh;    /* ✅ Prevents zoom overflow */
+    max-width: 95vw;     /* ✅ Keeps perfect scaling */
+    width: auto;
+    height: auto;
+  }
+}
+

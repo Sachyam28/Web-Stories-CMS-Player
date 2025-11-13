@@ -7,6 +7,7 @@ import AdminPage from "./pages/AdminPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ResetAdminPage from "./pages/ResetAdminPage";
+import NotFoundPage from "./pages/NotFoundPage";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -22,6 +23,7 @@ export default function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/reset-admin" element={<ResetAdminPage />} />
+        <Route path="*" element={<NotFoundPage />} />
 
         {/* ✅ ADMIN (PROTECTED) */}
         <Route
