@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { fetchStory } from "../api/storyAPI";
 import { useParams, useNavigate } from "react-router-dom";
 import "../components/storyPlayer.css";
+import { likeStory, dislikeStory, addComment } from "../api/storyAPI";
 
 export default function StoryPlayer() {
   const { id } = useParams();
@@ -42,7 +43,7 @@ export default function StoryPlayer() {
 
     const timer = setTimeout(() => {
       nextSlide();
-    }, slide.duration || 3000);
+    }, slide.duration || 10000);
 
     return () => clearTimeout(timer);
   }, [story, index]);
@@ -65,9 +66,13 @@ export default function StoryPlayer() {
   };
 
   // ✅ Like, Dislike, Comment handlers
-  const handleLike = () => {
-    setLikes((prev) => prev + 1);
-    // Optionally call backend API here
+  const handleLike = async () => {
+  try {
+    const res = await likeStory(id); // call backend
+    setLikes(res.likes); // update with backend value
+  } catch (err) {
+    console.error("Failed to like:", err);
+  }
   };
 
   const handleDislike = () => {
@@ -75,14 +80,19 @@ export default function StoryPlayer() {
     // Optionally call backend API here
   };
 
-  const handleCommentSubmit = (e) => {
-    e.preventDefault();
-    if (!newComment.trim()) return;
-    const updated = [...comments, { text: newComment, date: new Date().toLocaleString() }];
-    setComments(updated);
+  const handleCommentSubmit = async (e) => {
+  e.preventDefault();
+  if (!newComment.trim()) return;
+
+  try {
+    const res = await addComment(id, "Sachyam", newComment); // backend call
+    setComments(res.comments); // update state with backend comments
     setNewComment("");
-    // Optionally call backend API here
+  } catch (err) {
+    console.error("Failed to add comment:", err);
+  }
   };
+  
 
   if (!story) return <div>Loading...</div>;
 
