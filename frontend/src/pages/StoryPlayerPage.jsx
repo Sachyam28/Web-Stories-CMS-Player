@@ -21,7 +21,7 @@ export default function StoryPlayer() {
   useEffect(() => {
     fetchStory(id).then((data) => {
       if (!data) return;
-      // Ensure data is safe
+      
       data.comments = Array.isArray(data.comments) ? data.comments : [];
       setStory(data);
       setLikes(data.likes || 0);
@@ -50,7 +50,7 @@ export default function StoryPlayer() {
 
   const nextSlide = () => {
     if (index < story.slides.length - 1) setIndex(index + 1);
-    else navigate(-1); // exit story
+    else navigate(-1); 
   };
 
   const prevSlide = () => {
@@ -65,19 +65,23 @@ export default function StoryPlayer() {
     else nextSlide();
   };
 
-  // ✅ Like, Dislike, Comment handlers
+  
   const handleLike = async () => {
   try {
-    const res = await likeStory(id); // call backend
-    setLikes(res.likes); // update with backend value
+    const res = await likeStory(id); 
+    setLikes(res.likes); 
   } catch (err) {
     console.error("Failed to like:", err);
   }
   };
 
-  const handleDislike = () => {
-    setDislikes((prev) => prev + 1);
-    // Optionally call backend API here
+  const handleDislike = async () => {
+  try {
+    const res = await dislikeStory(id); 
+    setDislikes(res.dislikes); 
+  } catch (err) {
+    console.error("Failed to dislike:", err);
+  }
   };
 
   const handleCommentSubmit = async (e) => {
@@ -85,14 +89,14 @@ export default function StoryPlayer() {
   if (!newComment.trim()) return;
 
   try {
-    const res = await addComment(id, "Sachyam", newComment); // backend call
-    setComments(res.comments); // update state with backend comments
+    const res = await addComment(id, "Sachyam", newComment); 
+    setComments(res.comments); 
     setNewComment("");
   } catch (err) {
     console.error("Failed to add comment:", err);
   }
   };
-  
+
 
   if (!story) return <div>Loading...</div>;
 
@@ -129,19 +133,19 @@ export default function StoryPlayer() {
         )}
       </div>
 
-      {/* TOP TITLE */}
+      
       <div className="story-title">
         <h3>{story.title}</h3>
         <span className="close-btn" onClick={() => navigate(-1)}>✕</span>
       </div>
 
-      {/* ACTION BUTTONS */}
+      
       <div className="story-actions">
         <button onClick={handleLike}>👍 {likes}</button>
         <button onClick={handleDislike}>👎 {dislikes}</button>
       </div>
 
-      {/* COMMENTS SECTION */}
+      
       <div className="comments-section" onClick={(e) => e.stopPropagation()}>
         <h4>Comments</h4>
         {comments.length > 0 ? (
