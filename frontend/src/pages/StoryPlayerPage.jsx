@@ -14,6 +14,7 @@ export default function StoryPlayer() {
   const [dislikes, setDislikes] = useState(0);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
 
   const progressRef = useRef(null);
 
@@ -21,7 +22,7 @@ export default function StoryPlayer() {
   useEffect(() => {
     fetchStory(id).then((data) => {
       if (!data) return;
-      
+
       data.comments = Array.isArray(data.comments) ? data.comments : [];
       setStory(data);
       setLikes(data.likes || 0);
@@ -32,7 +33,7 @@ export default function StoryPlayer() {
 
   // ✅ Auto-play logic
   useEffect(() => {
-    if (!story) return;
+    if (!story || isTyping) return;
 
     const slide = story.slides[index];
     if (!slide) return;
@@ -43,14 +44,14 @@ export default function StoryPlayer() {
 
     const timer = setTimeout(() => {
       nextSlide();
-    }, slide.duration || 10000);
+    }, slide.duration || 7000);
 
     return () => clearTimeout(timer);
-  }, [story, index]);
+  }, [story, index, isTyping]);
 
   const nextSlide = () => {
     if (index < story.slides.length - 1) setIndex(index + 1);
-    else navigate(-1); 
+    else navigate(-1);
   };
 
   const prevSlide = () => {
@@ -65,36 +66,36 @@ export default function StoryPlayer() {
     else nextSlide();
   };
 
-  
+
   const handleLike = async () => {
-  try {
-    const res = await likeStory(id); 
-    setLikes(res.likes); 
-  } catch (err) {
-    console.error("Failed to like:", err);
-  }
+    try {
+      const res = await likeStory(id);
+      setLikes(res.likes);
+    } catch (err) {
+      console.error("Failed to like:", err);
+    }
   };
 
   const handleDislike = async () => {
-  try {
-    const res = await dislikeStory(id); 
-    setDislikes(res.dislikes); 
-  } catch (err) {
-    console.error("Failed to dislike:", err);
-  }
+    try {
+      const res = await dislikeStory(id);
+      setDislikes(res.dislikes);
+    } catch (err) {
+      console.error("Failed to dislike:", err);
+    }
   };
 
   const handleCommentSubmit = async (e) => {
-  e.preventDefault();
-  if (!newComment.trim()) return;
+    e.preventDefault();
+    if (!newComment.trim()) return;
 
-  try {
-    const res = await addComment(id, "Sachyam", newComment); 
-    setComments(res.comments); 
-    setNewComment("");
-  } catch (err) {
-    console.error("Failed to add comment:", err);
-  }
+    try {
+      const res = await addComment(id, "Sachyam", newComment);
+      setComments(res.comments);
+      setNewComment("");
+    } catch (err) {
+      console.error("Failed to add comment:", err);
+    }
   };
 
 
@@ -133,19 +134,33 @@ export default function StoryPlayer() {
         )}
       </div>
 
-      
+
       <div className="story-title">
         <h3>{story.title}</h3>
         <span className="close-btn" onClick={() => navigate(-1)}>✕</span>
       </div>
 
-      
-      <div className="story-actions">
-        <button onClick={handleLike}>👍 {likes}</button>
-        <button onClick={handleDislike}>👎 {dislikes}</button>
+      <div className="story-actions" onClick={(e) => e.stopPropagation()}>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            handleLike();
+          }}
+        >
+          👍 {likes}
+        </button>
+
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            handleDislike();
+          }}
+        >
+          👎 {dislikes}
+        </button>
       </div>
 
-      
+
       <div className="comments-section" onClick={(e) => e.stopPropagation()}>
         <h4>Comments</h4>
         {comments.length > 0 ? (
@@ -165,6 +180,8 @@ export default function StoryPlayer() {
             placeholder="Add a comment..."
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
+            onFocus={() => setIsTyping(true)}
+            onBlur={() => setIsTyping(false)}
           />
           <button type="submit">Post</button>
         </form>
